@@ -2,6 +2,7 @@ export interface CreateUserRequest {
   username: string;
   email: string;
   password: string;
+  salt: string;
 }
 
 export interface UserLoginRequest {
@@ -14,13 +15,12 @@ export interface UpdateUserRequest {
   lastName: string;
   phoneNumber: string;
   location: string;
+  updatedAt?: Date;
 }
 
 export interface UpdatePasswordRequest {
   password: string;
   confirmPassword: string;
-}
-
-export interface UserLoginResponse {
-  token: string;
+  salt?: string;
+  updatedAt?: Date;
 }
