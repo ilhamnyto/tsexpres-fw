@@ -1,3 +1,22 @@
+import { Request } from "express";
+
+export interface CustomError {
+  code: number;
+  message: string;
+  additionalInfo?: string;
+}
+
+export interface Paging {
+  next?: boolean;
+  cursor?: string;
+}
+
+export interface DataResponse {
+  code: number;
+  data: object;
+  paging?: Paging;
+}
+
 export interface CreateUserRequest {
   username: string;
   email: string;
@@ -23,4 +42,8 @@ export interface UpdatePasswordRequest {
   confirmPassword: string;
   salt?: string;
   updatedAt?: Date;
+}
+
+export interface CustomRequest extends Request {
+  userId: string;
 }

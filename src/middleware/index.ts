@@ -1,27 +1,41 @@
 import express from "express";
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
+import jwt, { JwtPayload, decode } from "jsonwebtoken";
+import dotenv from "dotenv";
+import { CustomError, CustomRequest } from "../schema";
 
-dotenv.config()
-
+dotenv.config();
 
 export const authenticateToken = (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response,
   next: express.NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Authorization token not found" });
+    const custErr: CustomError = {
+      code: 500,
+      message: "INTERNAL SERVER ERROR",
+      additionalInfo: "token is not found.",
+    };
+
+    return res.status(custErr.code).json(custErr);
   }
-  const SECRET_KEY = process.env.SECRET_KEY
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err ) {
 
-    }
-  })
+  try {
+    const SECRET_KEY = process.env.JWT_SECRET;
+    const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;
 
-    // Add the decoded user ID to the request object
+    req.userId = decoded.userId;
+  } catch (error) {
+    const custErr: CustomError = {
+      code: 500,
+      message: "INTERNAL SERVER ERROR",
+      additionalInfo: error.message,
+    };
+
+    return res.status(custErr.code).json(custErr);
+  }
+
   next();
 };

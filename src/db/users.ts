@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
-import {
-  CreateUserRequest,
-  UpdateUserRequest,
-} from "../schema/user";
+import { CreateUserRequest, UpdateUserRequest } from "../schema";
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -41,11 +38,10 @@ export const searchUserByUsernameOrEmail = (query: string) =>
     { _id: 0, __v: 0 }
   );
 
-export const getUserById = (id: string) =>
-  UserModel.findById(id);
+export const getUserById = (id: string) => UserModel.findById(id);
 
 export const updateProfile = (id: string, values: UpdateUserRequest) =>
   UserModel.findByIdAndUpdate(id, values);
 
 export const updatePassword = (id: string, password: string, updatedAt: Date) =>
-  UserModel.findByIdAndUpdate(id, {password, updatedAt});
+  UserModel.findByIdAndUpdate(id, { password, updatedAt });

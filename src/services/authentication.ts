@@ -1,15 +1,10 @@
-import { CreateUserRequest, UserLoginRequest } from "../schema/user";
+import { CreateUserRequest, UserLoginRequest } from "../schema";
 import {
   createUser,
   checkUserByUsernameOrEmail,
   getUserByUsername,
 } from "../db/users";
-import { generateSalt, hashPassword } from "../utils";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
-dotenv.config();
+import { generateSalt, generateToken, hashPassword } from "../utils";
 
 export const registerServices = async (req: CreateUserRequest) => {
   try {
@@ -62,13 +57,9 @@ export const loginServices = async (req: UserLoginRequest) => {
       throw new Error("Wrong password.");
     }
 
-    const SECRET_KEY = process.env.SECRET_KEY;
-
-    const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-      expiresIn: "10m",
-    });
-
+    const token = generateToken(user._id.toString());
     return token;
+
   } catch (error) {
     throw new Error(error.message);
   }

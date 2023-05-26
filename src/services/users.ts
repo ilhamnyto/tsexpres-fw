@@ -7,7 +7,7 @@ import {
   updatePassword,
   updateProfile,
 } from "../db/users";
-import { UpdatePasswordRequest, UpdateUserRequest } from "../schema/user";
+import { UpdatePasswordRequest, UpdateUserRequest } from "../schema";
 
 export const allUserServices = async () => {
   try {

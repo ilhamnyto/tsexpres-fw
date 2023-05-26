@@ -1,8 +1,12 @@
 import express from "express";
 
-import { CreateUserRequest, UserLoginRequest } from "../schema/user";
-import { DataResponse } from "../schema/response";
-import { CustomError } from "../schema/error";
+import {
+  CreateUserRequest,
+  UserLoginRequest,
+  DataResponse,
+  CustomError,
+} from "../schema";
+
 import { loginServices, registerServices } from "../services/authentication";
 
 export const registerController = async (

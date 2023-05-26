@@ -1,6 +1,11 @@
 import express from "express";
-import { CustomError } from "../schema/error";
-import { DataResponse } from "../schema/response";
+import {
+  CustomError,
+  UpdateUserRequest,
+  DataResponse,
+  UpdatePasswordRequest,
+  CustomRequest,
+} from "../schema";
 import {
   allUserServices,
   getUserByUsernameServices,
@@ -9,10 +14,9 @@ import {
   updatePasswordServices,
   updateProfileServices,
 } from "../services/users";
-import { UpdatePasswordRequest, UpdateUserRequest } from "schema/user";
 
 export const allUserController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
@@ -38,7 +42,7 @@ export const allUserController = async (
 };
 
 export const userByUsernameController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
@@ -64,7 +68,7 @@ export const userByUsernameController = async (
 };
 
 export const searchUserController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
@@ -95,11 +99,11 @@ export const searchUserController = async (
 };
 
 export const myProfileController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
-    const user = await myProfileServices("646f117ca18df038906b6b01");
+    const user = await myProfileServices(req.userId);
     const resp: DataResponse = {
       code: 203,
       data: {
@@ -120,18 +124,18 @@ export const myProfileController = async (
 };
 
 export const updateProfileController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
     const updateReq: UpdateUserRequest = {
-        firstName: req.body.first_name,
-        lastName: req.body.last_name,
-        phoneNumber: req.body.phone_number,
-        location: req.body.location
-    }
+      firstName: req.body.first_name,
+      lastName: req.body.last_name,
+      phoneNumber: req.body.phone_number,
+      location: req.body.location,
+    };
 
-    await updateProfileServices("646f117ca18df038906b6b01", updateReq);
+    await updateProfileServices(req.userId, updateReq);
     const resp: DataResponse = {
       code: 203,
       data: {
@@ -152,16 +156,16 @@ export const updateProfileController = async (
 };
 
 export const updatePasswordController = async (
-  req: express.Request,
+  req: CustomRequest,
   res: express.Response
 ) => {
   try {
     const updateReq: UpdatePasswordRequest = {
-       password: req.body.password,
-       confirmPassword: req.body.confirm_password
-    }
+      password: req.body.password,
+      confirmPassword: req.body.confirm_password,
+    };
 
-    await updatePasswordServices("646f1c72696375aa00dae3cb", updateReq);
+    await updatePasswordServices(req.userId, updateReq);
     const resp: DataResponse = {
       code: 203,
       data: {
