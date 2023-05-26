@@ -44,6 +44,11 @@ export interface UpdatePasswordRequest {
   updatedAt?: Date;
 }
 
+export interface CreatePostRequest {
+    user: string
+    body: string
+}
+
 export interface CustomRequest extends Request {
   userId: string;
 }

@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
   salt: { type: String, select: false },
   createdAt: { type: Date, default: () => new Date().toUTCString() },
   updatedAt: { type: Date, default: null },
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
 });
 
 export const UserModel = mongoose.model("User", UserSchema);
