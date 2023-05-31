@@ -1,9 +1,10 @@
 import { CreateUserRequest, UserLoginRequest } from "../schema";
 import {
-  createUser,
   checkUserByUsernameOrEmail,
+  createUser,
+  getUserAuth,
   getUserByUsername,
-} from "../db/users";
+} from "../repositories/users";
 import { generateSalt, generateToken, hashPassword } from "../utils";
 
 export const registerServices = async (req: CreateUserRequest) => {
@@ -32,6 +33,7 @@ export const registerServices = async (req: CreateUserRequest) => {
 
     req.password = hashedPassword;
     req.salt = salt;
+    req.createdAt = new Date();
     await createUser(req);
   } catch (error) {
     throw new Error(error.message);
@@ -44,9 +46,7 @@ export const loginServices = async (req: UserLoginRequest) => {
       throw new Error("Field cannot be empty");
     }
 
-    const user = await getUserByUsername(req.username).select(
-      "+password +salt -__v"
-    );
+    const user = await getUserAuth(req.username);
 
     if (!user) {
       throw new Error("Wrong username.");
@@ -57,9 +57,8 @@ export const loginServices = async (req: UserLoginRequest) => {
       throw new Error("Wrong password.");
     }
 
-    const token = generateToken(user._id.toString());
+    const token = generateToken(user.id);
     return token;
-
   } catch (error) {
     throw new Error(error.message);
   }

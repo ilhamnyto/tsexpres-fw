@@ -6,11 +6,11 @@ import {
   getPostByUserId,
   getPostByUsername,
   searchPosts,
-} from "../db/posts";
+} from "../repositories/posts";
 
 export const createPostServices = async (req: CreatePostRequest) => {
   try {
-    await createPost(req);
+    // await createPost(req);
   } catch (error) {
     throw new Error(error.message);
   }
@@ -28,9 +28,9 @@ export const getAllPostServices = async () => {
 
 export const getPostByIdServices = async (id: string) => {
   try {
-    const post = await getPostById(id);
+    // const post = await getPostById(id);
 
-    return post;
+    // return post;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -38,9 +38,9 @@ export const getPostByIdServices = async (id: string) => {
 
 export const getUserPostServices = async (username: string) => {
   try {
-    const posts = await getPostByUsername(username);
+    // const posts = await getPostByUsername(username);
 
-    return posts;
+    // return posts;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -48,9 +48,9 @@ export const getUserPostServices = async (username: string) => {
 
 export const searchPostServices = async (query: string) => {
   try {
-    const posts = await searchPosts(query);
+    // const posts = await searchPosts(query);
 
-    return posts;
+    // return posts;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -58,9 +58,9 @@ export const searchPostServices = async (query: string) => {
 
 export const myPostServices = async (userId: string) => {
   try {
-    const posts = await getPostByUserId(userId);
+    // const posts = await getPostByUserId(userId);
 
-    return posts;
+    // return posts;
   } catch (error) {
     throw new Error(error.message);
   }

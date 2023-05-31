@@ -22,6 +22,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   salt: string;
+  createdAt? : Date;
 }
 
 export interface UserLoginRequest {

@@ -20,13 +20,17 @@ export const allUserController = async (
   res: express.Response
 ) => {
   try {
-    const users = await allUserServices();
-
+    const cursor = req.query.cursor;
+    let users;
+    if (typeof cursor == "string") {
+      users = await allUserServices(cursor);
+    } else {
+      users = await allUserServices("");
+    }
     const resp: DataResponse = {
       code: 203,
-      data: {
-        users,
-      },
+      data: { users: users.data },
+      paging: users.paging,
     };
 
     return res.status(resp.code).json(resp);
@@ -72,21 +76,25 @@ export const searchUserController = async (
   res: express.Response
 ) => {
   try {
-    const query = req.query.query;
-
-    if (typeof query === "string") {
-      const users = await searchUserServices(query);
-      const resp: DataResponse = {
-        code: 203,
-        data: {
-          users,
-        },
-      };
-
-      return res.status(resp.code).json(resp);
-    } else {
-      throw new Error("Wrong search query.");
+    let keyword = req.query.query;
+    let cursor = req.query.cursor;
+    let users;
+    if (typeof keyword != "string") {
+      keyword = "";
     }
+    if (typeof cursor != "string") {
+      cursor = "";
+    }
+
+    users = await searchUserServices(keyword, cursor);
+    const resp: DataResponse = {
+      code: 203,
+      data: {
+        users,
+      },
+    };
+
+    return res.status(resp.code).json(resp);
   } catch (error) {
     const custErr: CustomError = {
       code: 500,
