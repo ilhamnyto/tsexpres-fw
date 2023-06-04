@@ -53,7 +53,7 @@ export const userByUsernameController = async (
     const user = await getUserByUsernameServices(req.params.username);
 
     const resp: DataResponse = {
-      code: 203,
+      code: user ? 203 : 404,
       data: {
         user,
       },
@@ -89,9 +89,8 @@ export const searchUserController = async (
     users = await searchUserServices(keyword, cursor);
     const resp: DataResponse = {
       code: 203,
-      data: {
-        users,
-      },
+      data: { users: users.data },
+      paging: users.paging,
     };
 
     return res.status(resp.code).json(resp);
@@ -113,7 +112,7 @@ export const myProfileController = async (
   try {
     const user = await myProfileServices(req.userId);
     const resp: DataResponse = {
-      code: 203,
+      code: user ? 203 : 404,
       data: {
         user,
       },

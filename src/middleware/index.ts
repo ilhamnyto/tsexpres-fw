@@ -25,7 +25,6 @@ export const authenticateToken = (
   try {
     const SECRET_KEY = process.env.JWT_SECRET;
     const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;
-
     req.userId = decoded.userId;
   } catch (error) {
     const custErr: CustomError = {

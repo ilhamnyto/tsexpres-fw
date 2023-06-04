@@ -56,7 +56,7 @@ export const loginServices = async (req: UserLoginRequest) => {
     if (user.password != expectedHash) {
       throw new Error("Wrong password.");
     }
-
+    
     const token = generateToken(user.id);
     return token;
   } catch (error) {

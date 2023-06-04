@@ -1,5 +1,9 @@
 import { pool } from "../config";
-import { CreateUserRequest } from "../schema";
+import {
+  CreateUserRequest,
+  UpdatePasswordRequest,
+  UpdateUserRequest,
+} from "../schema";
 
 export const createUser = async (user: CreateUserRequest) => {
   try {
@@ -40,9 +44,31 @@ export const getUserAuth = async (username: string) => {
     const client = await pool.connect();
     const result = await client.query(
       `
-      SELECT username, password, salt FROM users WHERE username = $1
+      SELECT id, username, password, salt FROM users WHERE username = $1
     `,
       [username]
+    );
+
+    client.release();
+
+    if (result.rowCount) {
+      return result.rows[0];
+    }
+
+    return;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const getUserAuthById = async (id: string) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `
+      SELECT id, username, password, salt FROM users WHERE id = $1
+    `,
+      [id]
     );
 
     client.release();
@@ -66,7 +92,7 @@ export const getUserByUsername = async (username: string) => {
     `,
       [username]
     );
-
+    client.release();
     if (result.rowCount) {
       return result.rows[0];
     }
@@ -78,7 +104,6 @@ export const getUserByUsername = async (username: string) => {
 };
 
 export const getAllUser = async (cursor: string) => {
-  console.log(cursor);
   try {
     const client = await pool.connect();
     let query = `select username, email, first_name, last_name, email, phone_number, location, date_trunc('second', created_at) as created_at from users`;
@@ -89,19 +114,37 @@ export const getAllUser = async (cursor: string) => {
 
     query += " order by created_at DESC LIMIT 6";
     const result = await client.query(query);
-
+    client.release();
     return result.rows;
   } catch (error) {
     throw new Error(error.message);
   }
 };
-export const getUserById = async () => {};
+export const getUserById = async (id: string) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `
+    select username, email, first_name, last_name, email, phone_number, location, date_trunc('second', created_at) as created_at from users where id = $1
+    `,
+      [id]
+    );
+
+    client.release();
+    if (result.rowCount) {
+      return result.rows[0];
+    }
+    return;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 export const searchUserByUsernameOrEmail = async (
   keyword: string,
   cursor: string
 ) => {
   try {
-    console.log(keyword);
     const client = await pool.connect();
     let query = `select username, email, first_name, last_name, email, phone_number, location, date_trunc('second', created_at) as created_at from users where`;
 
@@ -112,11 +155,49 @@ export const searchUserByUsernameOrEmail = async (
 
     query += " username LIKE $1 order by created_at DESC LIMIT 6";
     const result = await client.query(query, [keyword]);
-
+    client.release();
     return result.rows;
   } catch (error) {
     throw new Error("error.message");
   }
 };
-export const updatePassword = async () => {};
-export const updateProfile = async () => {};
+export const updatePassword = async (
+  id: string,
+  req: UpdatePasswordRequest
+) => {
+  try {
+    const client = await pool.connect();
+    await client.query(
+      `
+      UPDATE users SET password = $1, updated_at = $2 where id = $3
+    `,
+      [req.password, req.updatedAt, id]
+    );
+    client.release();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const updateProfile = async (id: string, req: UpdateUserRequest) => {
+  try {
+    const client = await pool.connect();
+    await client.query(
+      `UPDATE users SET 
+       first_name = $1, last_name = $2, phone_number = $3, location = $4, updated_at = $5
+       where id = $6
+       `,
+      [
+        req.firstName,
+        req.lastName,
+        req.phoneNumber,
+        req.location,
+        req.updatedAt,
+        id,
+      ]
+    );
+    client.release();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
