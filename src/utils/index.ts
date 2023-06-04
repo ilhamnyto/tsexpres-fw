@@ -14,7 +14,7 @@ export const hashPassword = (salt: string, password: string): string => {
 };
 
 export const generateSalt = (): string =>
-  crypto.randomBytes(128).toString("base64");
+  crypto.randomBytes(64).toString("base64");
 
 export const validatePhoneNumber = (phoneNumber: string): boolean => {
   const regex = /^\+[1-9]\d{1,14}$/;

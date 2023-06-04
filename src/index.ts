@@ -28,9 +28,3 @@ const server = http.createServer(app);
 server.listen(5555, () => {
   console.log(`server running on port 5555`);
 });
-
-const MONGO_URL = process.env.MONGO_URL;
-
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URL);
-mongoose.connection.on("error", (error: Error) => console.log(error));
