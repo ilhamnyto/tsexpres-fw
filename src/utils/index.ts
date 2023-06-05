@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import dotenv from "dotenv";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -25,7 +25,17 @@ export const validatePhoneNumber = (phoneNumber: string): boolean => {
 export const generateToken = (userId: string): string => {
   const SECRET_KEY = process.env.JWT_SECRET;
 
-  return jwt.sign({ userId}, SECRET_KEY, {
+  return jwt.sign({ userId }, SECRET_KEY, {
     expiresIn: "10m",
   });
+};
+
+export const encodePostId = (postId: number, username: string) => {
+  const postString = `${postId}:${username}`;
+
+  return btoa(postString);
+};
+
+export const decodePostId = (postId: string) => {
+  return atob(postId);
 };

@@ -22,7 +22,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   salt: string;
-  createdAt? : Date;
+  createdAt?: Date;
 }
 
 export interface UserLoginRequest {
@@ -46,8 +46,9 @@ export interface UpdatePasswordRequest {
 }
 
 export interface CreatePostRequest {
-    user: string
-    body: string
+  user_id: string;
+  body: string;
+  createdAt?: Date;
 }
 
 export interface CustomRequest extends Request {
