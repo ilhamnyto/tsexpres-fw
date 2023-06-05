@@ -14,6 +14,7 @@ import {
   updatePasswordServices,
   updateProfileServices,
 } from "../services/users";
+import { redisClient } from "../config";
 
 export const allUserController = async (
   req: CustomRequest,
@@ -110,7 +111,16 @@ export const myProfileController = async (
   res: express.Response
 ) => {
   try {
-    const user = await myProfileServices(req.userId);
+    let user = await redisClient.get(`profile:${req.userId}`);
+
+    if (!user) {
+      user = await myProfileServices(req.userId);
+      await redisClient.set(`profile:${req.userId}`, JSON.stringify(user));
+      await redisClient.expire(`profile:${req.userId}`, 180);
+    } else {
+      user = JSON.parse(user);
+    }
+
     const resp: DataResponse = {
       code: user ? 203 : 404,
       data: {
