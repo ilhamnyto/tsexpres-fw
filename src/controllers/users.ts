@@ -189,7 +189,7 @@ export const updatePasswordController = async (
         message: "Password updated successfully.",
       },
     };
-
+    
     return res.status(resp.code).json(resp);
   } catch (error) {
     const custErr: CustomError = {
