@@ -13,6 +13,7 @@ import {
   myPostServices,
   searchPostServices,
 } from "../services/posts";
+import { redisClient } from "../config";
 
 export const createPostController = async (
   req: CustomRequest,
@@ -91,7 +92,16 @@ export const getSpecificPostController = async (
       const username = keyword.substring(1);
       posts = await getUserPostServices(username, cursor);
     } else {
-      posts = await getPostByIdServices(keyword);
+      posts = await redisClient.get(`post:${keyword}`);
+
+      if (!posts) {
+        posts = await getPostByIdServices(keyword);
+
+        await redisClient.set(`post:${keyword}`, JSON.stringify(posts));
+        await redisClient.expire(`post:${keyword}`, 180);
+      } else {
+        posts = JSON.parse(posts);
+      }
     }
 
     const resp: DataResponse = {
@@ -157,7 +167,7 @@ export const userMyPostController = async (
     if (typeof cursor != "string") {
       cursor = "";
     }
-    
+
     const posts = await myPostServices(req.userId, cursor);
 
     const resp: DataResponse = {

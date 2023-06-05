@@ -5,10 +5,16 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import router from "./router";
+import { redisClient } from "./config";
 
 dotenv.config();
+
+redisClient.connect();
+
+redisClient.on("error", (error) => {
+  console.log("Redis connection error", error);
+});
 
 const app = express();
 
