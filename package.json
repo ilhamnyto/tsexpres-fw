@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "ts-node ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrate": "ts-node ./src/utils/migrate.ts"
   },
   "repository": {
     "type": "git",
