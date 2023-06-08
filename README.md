@@ -38,7 +38,7 @@ This project is licensed under the [MIT License](./LICENSE).
 
 This project was made possible by the following open-source libraries:
 
-- [Echo](https://expressjs.com/)
+- [Express](https://expressjs.com/)
 - [PostgreSQL](https://www.postgresql.org)
 - [Redis](https://redis.io)
 
